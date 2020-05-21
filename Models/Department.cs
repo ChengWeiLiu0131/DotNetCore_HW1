@@ -27,7 +27,7 @@ namespace hw1.Models
         [Required]
         public byte[] RowVersion { get; set; }
         public DateTime DateModified { get; set; }
-        // public bool IsDeleted { get; set; }
+        public bool IsDeleted { get; set; }
 
         [ForeignKey(nameof(InstructorId))]
         [InverseProperty(nameof(Person.Department))]

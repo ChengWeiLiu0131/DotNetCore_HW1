@@ -21,7 +21,7 @@ namespace hw1.Models
         public string Title { get; set; }
         public int Credits { get; set; }
         public DateTime DateModified { get; set; }
-        // public bool IsDeleted { get; set; }
+        public bool IsDeleted { get; set; }
 
         [Column("DepartmentID")]
         public int DepartmentId { get; set; }
