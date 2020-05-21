@@ -19,13 +19,17 @@ namespace hw1.Controllers {
         // GET api/course
         [HttpGet ("")]
         public ActionResult<IEnumerable<Course>> GetCourses () {
-            return db.Course.ToList();
+            return db.Course.Where(x => x.IsDeleted == false).ToList();
         }
 
         // GET api/course/5
         [HttpGet ("{id}")]
         public ActionResult<Course> GetCourseById (int id) {
-            return db.Course.Find(id);
+            var course = db.Course.Find(id);
+            if (course == null || course.IsDeleted == true) {
+                return NotFound();
+            }
+            return course;
         }
 
         // POST api/course
@@ -52,8 +56,9 @@ namespace hw1.Controllers {
         public void DeleteCourseById (int id) {
             var course = db.Course.Find(id);
             if (course != null) {
-                // course.DateModified = DateTime.Now;
-                db.Course.Remove(course);
+                course.IsDeleted = true;
+                //db.Course.Remove(course);
+                db.Course.Update(course);
                 db.SaveChanges();
             }
         }

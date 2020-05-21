@@ -19,13 +19,17 @@ namespace hw1.Controllers {
         // GET api/department
         [HttpGet ("")]
         public ActionResult<IEnumerable<Department>> GetDepartments () {
-            return db.Department.ToList();
+            return db.Department.Where(x => x.IsDeleted == false).ToList();
         }
 
         // GET api/department/5
         [HttpGet ("{id}")]
         public ActionResult<Department> GetDepartmentById (int id) {
-            return db.Department.Find(id);
+            var department = db.Department.Find(id);
+            if (department == null || department.IsDeleted == true) {
+                return NotFound();
+            }
+            return department;
         }
 
         // POST api/department
@@ -67,10 +71,19 @@ namespace hw1.Controllers {
         public void DeleteDepartmentById (int id) {
             var department = db.Department.Find (id);
             if (department != null) {
-                SqlParameter departmentID = new SqlParameter("@DepartmentID", department.DepartmentId);
-                SqlParameter rowVersion = new SqlParameter("@RowVersion_Original", department.RowVersion);
-                db.Database.ExecuteSqlRaw("execute Department_Delete @DepartmentID,@RowVersion_Original", departmentID, rowVersion);
+                department.IsDeleted = true;
+                db.Department.Update(department);
+                db.SaveChanges();
             }
+            
+            // Use SQL Procedure
+            // if (department != null) {
+            //     SqlParameter departmentID = new SqlParameter("@DepartmentID", department.DepartmentId);
+            //     SqlParameter rowVersion = new SqlParameter("@RowVersion_Original", department.RowVersion);
+            //     db.Database.ExecuteSqlRaw("execute Department_Delete @DepartmentID,@RowVersion_Original", departmentID, rowVersion);
+            // }
+
+            // Normal delete
             //var department = db.Department.Find (id);
             // if (department != null) {
             //     db.Department.Remove(department);

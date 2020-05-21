@@ -21,14 +21,18 @@ namespace hw1.Controllers
         [HttpGet("")]
         public ActionResult<IEnumerable<Person>> GetPersons()
         {
-            return db.Person.ToList();
+            return db.Person.Where(x => x.IsDeleted == false).ToList();
         }
 
         // GET api/person/5
         [HttpGet("{id}")]
         public ActionResult<Person> GetPersonById(int id)
         {
-            return db.Person.Find(id);
+            var person = db.Person.Find(id);
+            if(person == null || person.IsDeleted == true) {
+                return NotFound();
+            }
+            return person;
         }
 
         // POST api/person
@@ -58,7 +62,9 @@ namespace hw1.Controllers
         {
             var person = db.Person.Find(id);
             if (person != null) {
-                db.Person.Remove(person);
+                person.IsDeleted = true;
+                // db.Person.Remove(person);
+                db.Person.Update(person);
                 db.SaveChanges();
             }
         }
