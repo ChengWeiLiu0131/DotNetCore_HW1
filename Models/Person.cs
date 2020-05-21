@@ -31,7 +31,8 @@ namespace hw1.Models
         [Required]
         [StringLength(128)]
         public string Discriminator { get; set; }
-
+        public DateTime DateModified { get; set; }
+        // public bool IsDeleted { get; set; }
         [InverseProperty("Instructor")]
         public virtual OfficeAssignment OfficeAssignment { get; set; }
         [InverseProperty("Instructor")]
@@ -40,5 +41,6 @@ namespace hw1.Models
         public virtual ICollection<Department> Department { get; set; }
         [InverseProperty("Student")]
         public virtual ICollection<Enrollment> Enrollment { get; set; }
+
     }
 }
